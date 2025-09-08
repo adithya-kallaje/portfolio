@@ -1,5 +1,5 @@
-baseurl = "http://www.example.com"
-title = "johndoe"
+baseurl = "https://adithya-kallaje.github.io"
+title = "Adithya Kallaje - Cybersecurity Portfolio"
 theme = "hugo-coder"
 languagecode = "en"
 defaultcontentlanguage = "en"
@@ -10,24 +10,25 @@ pagerSize = 20
 
 [services]
 [services.disqus]
-shortname = "yourdiscussshortname"
+# Disqus comments disabled for now
+# shortname = "yourdiscussshortname"
 
 [markup.highlight]
 style = "github-dark"
 
 [params]
-  author = "John Doe"
-  info = "Full Stack DevOps and Magician"
-  description = "John Doe's personal website"
-  keywords = "blog,developer,personal"
+  author = "Adithya Kallaje"
+  info = "BTech Student | Aspiring Cybersecurity Professional"
+  description = "Adithya Kallaje's cybersecurity portfolio showcasing projects, learning journey, and technical skills"
+  keywords = "cybersecurity,infosec,student,portfolio,btech,security projects"
   avatarurl = "images/avatar.jpg"
-  #gravatar = "john.doe@example.com"
+  #gravatar = "adikallaje05@gmail.com"
 
   faviconSVG = "/img/favicon.svg"
   favicon_32 = "/img/favicon-32x32.png"
   favicon_16 = "/img/favicon-16x16.png"
 
-  since = 2019
+  since = 2025
 
   enableTwemoji = true
 
@@ -49,24 +50,28 @@ style = "github-dark"
   name = "Github"
   icon = "fa-brands fa-github fa-2x"
   weight = 1
-  url = "https://github.com/johndoe/"
+  url = "https://github.com/adithya-kallaje/"
 [[params.social]]
-  name = "Gitlab"
-  icon = "fa-brands fa-gitlab fa-2x"
+  name = "LinkedIn"
+  icon = "fa-brands fa-linkedin fa-2x"
   weight = 2
-  url = "https://gitlab.com/johndoe/"
+  url = "https://www.linkedin.com/in/adithya-kallaje-623b31188/"
 [[params.social]]
-  name = "Twitter"
-  icon = "fa-brands fa-x-twitter fa-2x"
+  name = "Email"
+  icon = "fa fa-envelope fa-2x"
   weight = 3
-  url = "https://twitter.com/johndoe/"
+  url = "mailto:adikallaje05@gmail.com"
 
 # Menu links
 [[menu.main]]
-  name = "Blog"
-  weight = 1
-  url  = "posts/"
-[[menu.main]]
   name = "About"
-  weight = 2
+  weight = 1
   url = "about/"
+[[menu.main]]
+  name = "Projects"
+  weight = 2
+  url  = "projects/"
+[[menu.main]]
+  name = "Blog"
+  weight = 3
+  url  = "posts/"
