@@ -1,4 +1,4 @@
-baseurl = "https://adithya-kallaje.github.io"
+baseURL = "https://adithya-kallaje.github.io/"
 title = "Adithya Kallaje - Cybersecurity Portfolio"
 theme = "hugo-coder"
 languagecode = "en"
@@ -18,7 +18,7 @@ style = "github-dark"
 
 [params]
   author = "Adithya Kallaje"
-  info = "BTech Student | Aspiring Cybersecurity Professional"
+  info = "Aspiring Cybersecurity Professional"
   description = "Adithya Kallaje's cybersecurity portfolio showcasing projects, learning journey, and technical skills"
   keywords = "cybersecurity,infosec,student,portfolio,btech,security projects"
   avatarurl = "images/avatar.jpg"
