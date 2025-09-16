@@ -10,7 +10,6 @@ platform: "TryHackMe"
 author: "Adithya Kallaje"
 ---
 
-# TryHackMe: Contrabando Writeup
 
 ![Contrabando Banner](/images/writeups/contrabando-banner.jpg)
 

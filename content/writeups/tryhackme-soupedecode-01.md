@@ -1,16 +1,14 @@
 ---
-title: "TryHackMe: Soupedecode 01"
+title: "HackTheBox: Soupedecode 01"
 date: 2025-08-02
 description: "Soupedecode 01 was a very simple Active Directory room. We began by enumerating a list of usernames via RID cycling and then performed password spraying."
-categories: ["TryHackMe"]
+categories: ["HackTheBox"]
 tags: ["active-directory", "rid-cycling", "password-spraying", "windows", "enumeration"]
 image: "/images/writeups/soupedecode-thumb.jpg"
 difficulty: "Easy"
-platform: "TryHackMe"
+platform: "HackTheBox"
 author: "Adithya Kallaje"
 ---
-
-# TryHackMe: Soupedecode 01 Writeup
 
 ![Soupedecode Banner](/images/writeups/soupedecode-banner.jpg)
 

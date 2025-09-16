@@ -10,9 +10,33 @@
   
   {{ .Content }}
   
+  <!-- Filter Controls -->
+  <div class="filter-controls">
+    <div class="filter-group">
+      <label for="platform-filter">
+        <i class="fa fa-filter"></i>
+      </label>
+      <select id="platform-filter" class="filter-select">
+        <option value="all">All Platforms</option>
+        {{ $platforms := slice }}
+        {{ range .Paginator.Pages }}
+          {{ if .Params.platform }}
+            {{ $platforms = $platforms | append .Params.platform }}
+          {{ end }}
+        {{ end }}
+        {{ range ($platforms | uniq | sort) }}
+          <option value="{{ . }}">{{ . }}</option>
+        {{ end }}
+      </select>
+    </div>
+    <div class="results-count">
+      <span id="results-text">Showing all writeups</span>
+    </div>
+  </div>
+  
   <div class="writeups-list">
     {{ range .Paginator.Pages }}
-    <article class="writeup-card">
+    <article class="writeup-card" data-platform="{{ .Params.platform | default "unknown" }}">
       <div class="writeup-content">
         <div class="writeup-header">
           <h3 class="writeup-title">
@@ -268,5 +292,182 @@
     font-size: 1rem;
   }
 }
+
+/* Filter Controls Styling */
+.filter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--color-card-background);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.filter-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-size: 1rem;
+  min-width: 150px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb), 0.2);
+}
+
+.results-count {
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+/* Dark mode filter styling */
+[data-colorscheme="dark"] .filter-controls {
+  background: #2d3748;
+  border-color: #4a5568;
+}
+
+[data-colorscheme="dark"] .filter-select {
+  background: #4a5568;
+  border-color: #718096;
+  color: #e2e8f0;
+}
+
+/* Light mode filter styling */
+[data-colorscheme="light"] .filter-controls {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+[data-colorscheme="light"] .filter-select {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+/* Auto mode filter styling */
+@media (prefers-color-scheme: dark) {
+  [data-colorscheme="auto"] .filter-controls {
+    background: #2d3748;
+    border-color: #4a5568;
+  }
+  
+  [data-colorscheme="auto"] .filter-select {
+    background: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  [data-colorscheme="auto"] .filter-controls {
+    background: #ffffff;
+    border-color: #e2e8f0;
+  }
+  
+  [data-colorscheme="auto"] .filter-select {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #374151;
+  }
+}
+
+/* Hidden writeup cards */
+.writeup-card.filtered-hidden {
+  display: none;
+}
+
+/* Mobile responsive for filters */
+@media (max-width: 768px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin: 2rem 1rem;
+    max-width: none;
+  }
+  
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+  
+  .results-count {
+    text-align: center;
+  }
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const platformFilter = document.getElementById('platform-filter');
+  const resultsText = document.getElementById('results-text');
+  const writeupCards = document.querySelectorAll('.writeup-card');
+  
+  function updateResultsCount(visibleCount, totalCount) {
+    if (visibleCount === totalCount) {
+      resultsText.textContent = `Showing all ${totalCount} writeup${totalCount !== 1 ? 's' : ''}`;
+    } else {
+      resultsText.textContent = `Showing ${visibleCount} of ${totalCount} writeup${totalCount !== 1 ? 's' : ''}`;
+    }
+  }
+  
+  function filterWriteups() {
+    const selectedPlatform = platformFilter.value;
+    let visibleCount = 0;
+    const totalCount = writeupCards.length;
+    
+    writeupCards.forEach(card => {
+      const cardPlatform = card.getAttribute('data-platform');
+      
+      if (selectedPlatform === 'all' || cardPlatform === selectedPlatform) {
+        card.classList.remove('filtered-hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('filtered-hidden');
+      }
+    });
+    
+    updateResultsCount(visibleCount, totalCount);
+  }
+  
+  // Initialize the results count
+  updateResultsCount(writeupCards.length, writeupCards.length);
+  
+  // Add event listener for filter changes
+  platformFilter.addEventListener('change', filterWriteups);
+});
+</script>
 {{ end }}
