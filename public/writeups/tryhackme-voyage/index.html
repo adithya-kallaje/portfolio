@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1314&amp;path=livereload" data-no-instant defer></script>
+  <title>
+  TryHackMe: Voyage · Adithya Kallaje - Cybersecurity Portfolio
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Adithya Kallaje">
+<meta name="description" content="Voyage started with exploiting a vulnerability in Joomla CMS to leak its configuration and obtain a set of credentials for SSH access.">
+<meta name="keywords" content="cybersecurity,infosec,student,portfolio,btech,security projects">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TryHackMe: Voyage">
+  <meta name="twitter:description" content="Voyage started with exploiting a vulnerability in Joomla CMS to leak its configuration and obtain a set of credentials for SSH access.">
+
+<meta property="og:url" content="http://localhost:1314/writeups/tryhackme-voyage/">
+  <meta property="og:site_name" content="Adithya Kallaje - Cybersecurity Portfolio">
+  <meta property="og:title" content="TryHackMe: Voyage">
+  <meta property="og:description" content="Voyage started with exploiting a vulnerability in Joomla CMS to leak its configuration and obtain a set of credentials for SSH access.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2025-09-01T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-09-01T00:00:00+00:00">
+    <meta property="article:tag" content="Web">
+    <meta property="article:tag" content="Joomla">
+    <meta property="article:tag" content="Vulnerability">
+    <meta property="article:tag" content="Ssh">
+    <meta property="article:tag" content="Privilege-Escalation">
+
+
+
+
+<link rel="canonical" href="http://localhost:1314/writeups/tryhackme-voyage/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.css" media="screen">
+
+
+
+
+
+
+  
+    
+    
+    <link rel="stylesheet" href="/css/coder-dark.css" media="screen">
+  
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+<body class="preload-transitions colorscheme-auto">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="http://localhost:1314/">
+      Adithya Kallaje - Cybersecurity Portfolio
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/projects/">Projects</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/writeups/">Writeups</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container page">
+  <article>
+    <header>
+      <h1 class="title">
+        <a class="title-link" href="http://localhost:1314/writeups/tryhackme-voyage/">
+          TryHackMe: Voyage
+        </a>
+      </h1>
+    </header>
+
+    <h1 id="tryhackme-voyage-writeup">
+  TryHackMe: Voyage Writeup
+  <a class="heading-link" href="#tryhackme-voyage-writeup">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p><img src="/images/writeups/voyage-banner.jpg" alt="Voyage Banner"></p>
+<h2 id="overview">
+  Overview
+  <a class="heading-link" href="#overview">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Voyage is a medium-difficulty room on TryHackMe that focuses on exploiting a Joomla CMS vulnerability to gain initial access and then escalating privileges on a Linux system.</p>
+<h2 id="reconnaissance">
+  Reconnaissance
+  <a class="heading-link" href="#reconnaissance">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<h3 id="nmap-scan">
+  Nmap Scan
+  <a class="heading-link" href="#nmap-scan">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nmap -sC -sV -oN initial.nmap 10.10.x.x
+</span></span></code></pre></div><p>The scan revealed:</p>
+<ul>
+<li>Port 22 (SSH)</li>
+<li>Port 80 (HTTP - Joomla CMS)</li>
+</ul>
+<h3 id="web-enumeration">
+  Web Enumeration
+  <a class="heading-link" href="#web-enumeration">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gobuster dir -u http://10.10.x.x -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+</span></span></code></pre></div><h2 id="initial-access">
+  Initial Access
+  <a class="heading-link" href="#initial-access">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<h3 id="joomla-vulnerability-exploitation">
+  Joomla Vulnerability Exploitation
+  <a class="heading-link" href="#joomla-vulnerability-exploitation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The target was running an outdated version of Joomla with a known configuration disclosure vulnerability.</p>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Exploit the vulnerability</span>
+</span></span><span style="display:flex;"><span>curl <span style="color:#a5d6ff">&#34;http://10.10.x.x/administrator/components/com_admin/sql_scripts/joomla.sql&#34;</span>
+</span></span></code></pre></div><p>This revealed database credentials that were reused for SSH access.</p>
+<h2 id="privilege-escalation">
+  Privilege Escalation
+  <a class="heading-link" href="#privilege-escalation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>After gaining initial access as a low-privileged user, I discovered:</p>
+<ol>
+<li><strong>SUID Binary Analysis</strong></li>
+<li><strong>Sudo Privileges Check</strong></li>
+<li><strong>Kernel Version Enumeration</strong></li>
+</ol>
+<h3 id="exploitation-steps">
+  Exploitation Steps
+  <a class="heading-link" href="#exploitation-steps">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Check for SUID binaries</span>
+</span></span><span style="display:flex;"><span>find / -perm -4000 2&gt;/dev/null
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Check sudo privileges</span>
+</span></span><span style="display:flex;"><span>sudo -l
+</span></span></code></pre></div><h2 id="lessons-learned">
+  Lessons Learned
+  <a class="heading-link" href="#lessons-learned">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<ul>
+<li>Always check for configuration disclosure vulnerabilities in CMS platforms</li>
+<li>Credential reuse is a common security issue</li>
+<li>Proper enumeration is key to finding privilege escalation vectors</li>
+</ul>
+<h2 id="tools-used">
+  Tools Used
+  <a class="heading-link" href="#tools-used">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<ul>
+<li>Nmap</li>
+<li>Gobuster</li>
+<li>Burp Suite</li>
+<li>LinPEAS</li>
+</ul>
+<hr>
+<p><strong>Difficulty</strong>: Medium<br>
+<strong>Platform</strong>: TryHackMe<br>
+<strong>Completion Date</strong>: September 1, 2025</p>
+
+  </article>
+</section>
+
+  
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Adithya Kallaje 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.js"></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>
